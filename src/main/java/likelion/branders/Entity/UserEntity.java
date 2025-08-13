@@ -13,23 +13,23 @@ import lombok.*;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long UserId;
+    private Long userId;
 
     @Column
-    private String LoginId;
+    private String loginId;
 
     @Column
-    private String UserName;
+    private String userName;
 
     @Column
-    private String Password;
+    private String password;
 
     @Column
-    private String Email;
+    private String email;
 
     @Column
-    private String PhoneNumber;
+    private String phoneNumber;
 
     @Column
-    private String BirthDate;
+    private String birthDate;
 }
