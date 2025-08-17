@@ -37,7 +37,7 @@ public class UserEntity {
     public UserDTO toDTO(){
         return UserDTO.builder()
                 .userId(userId)
-                .longinId(loginId)
+                .loginId(loginId)
                 .userName(userName)
                 .password(password)
                 .email(email)
