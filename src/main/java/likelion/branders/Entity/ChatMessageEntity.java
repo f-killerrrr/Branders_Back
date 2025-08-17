@@ -1,6 +1,8 @@
 package likelion.branders.Entity;
 
 import jakarta.persistence.*;
+import likelion.branders.DTO.ChatMessageDTO;
+import likelion.branders.DTO.ChatSessionDTO;
 import likelion.branders.Enum.SenderType;
 import lombok.*;
 import org.w3c.dom.Text;
@@ -31,4 +33,12 @@ public class ChatMessageEntity {
     @JoinColumn(name = "sessionId", nullable = false)
     private ChatSessionEntity session;
 
+    public ChatMessageDTO toDTO(){
+        return ChatMessageDTO.builder()
+                .messageId(messageId)
+                .message(message)
+                .senderType(senderType)
+                .sessionId(session.getSessionId())
+                .build();
+    }
 }
