@@ -1,6 +1,7 @@
 package likelion.branders.Entity;
 
 import jakarta.persistence.*;
+import likelion.branders.DTO.UserDTO;
 import lombok.*;
 
 @Entity
@@ -32,4 +33,16 @@ public class UserEntity {
 
     @Column
     private String birthDate;
+
+    public UserDTO toDTO(){
+        return UserDTO.builder()
+                .userId(userId)
+                .longinId(loginId)
+                .userName(userName)
+                .password(password)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .birthDate(birthDate)
+                .build();
+    }
 }
