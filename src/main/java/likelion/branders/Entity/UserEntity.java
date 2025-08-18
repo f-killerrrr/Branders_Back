@@ -34,10 +34,14 @@ public class UserEntity {
     @Column
     private String birthDate;
 
+    public UserEntity(Long userId) {
+        this.userId = userId;
+    }
+
     public UserDTO toDTO(){
         return UserDTO.builder()
                 .userId(userId)
-                .longinId(loginId)
+                .loginId(loginId)
                 .userName(userName)
                 .password(password)
                 .email(email)
