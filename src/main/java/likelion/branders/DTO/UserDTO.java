@@ -10,7 +10,7 @@ import lombok.*;
 
 public class UserDTO {
     private Long userId;
-    private String longinId;
+    private String loginId;
     private String userName;
     private String password;
     private String email;
