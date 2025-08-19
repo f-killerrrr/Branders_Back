@@ -49,4 +49,11 @@ public class ChatController {
     public ResponseEntity<List<ChatMessageDTO>> getMessages(@PathVariable Long sessionId) {
         return ResponseEntity.ok(chatBotService.getSessionMessages(sessionId));
     }
+
+    // 세션 삭제
+    @DeleteMapping("/session/{sessionId}")
+    public ResponseEntity<String> deleteSession(@PathVariable Long sessionId) {
+        chatBotService.deleteSession(sessionId);
+        return ResponseEntity.ok("세션이 삭제되었습니다.");
+    }
 }

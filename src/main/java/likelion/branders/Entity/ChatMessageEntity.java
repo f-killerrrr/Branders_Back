@@ -22,7 +22,7 @@ public class ChatMessageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long messageId;
 
-    @Column
+    @Column(length = 2000)
     private String message;
 
     @Enumerated(EnumType.STRING)

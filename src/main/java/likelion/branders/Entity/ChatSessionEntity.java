@@ -35,9 +35,11 @@ public class ChatSessionEntity {
                 .sessionId(sessionId)
                 .sessionTitle(sessionTitle)
                 .userId(user.getUserId())
-                .messages(messages.stream()
+                .messages(messages != null
+                        ? messages.stream()
                         .map(ChatMessageEntity::toDTO)
-                        .toList())
+                        .toList()
+                        : new ArrayList<>())
                 .build();
     }
 }
