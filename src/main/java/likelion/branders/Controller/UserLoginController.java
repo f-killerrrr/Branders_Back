@@ -48,6 +48,13 @@ public class UserLoginController {
         return ResponseEntity.ok(loggedInUser);
     }
 
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate(); // 세션 무효화
+        return ResponseEntity.ok("로그아웃 완료");
+    }
+
     // 회원 탈퇴
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {

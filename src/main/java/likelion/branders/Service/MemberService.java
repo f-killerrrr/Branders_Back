@@ -16,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class MemberService {
