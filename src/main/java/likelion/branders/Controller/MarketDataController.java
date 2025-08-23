@@ -77,4 +77,11 @@ public class MarketDataController {
         MarketDataDTO.SigunguBreakdownResponse response = marketDataService.getSigunguDetailedBreakdown(keyword);
         return ResponseEntity.ok(response);
     }
+
+    // Top 5 업종 조회 API (새로 추가)
+    @GetMapping("/top5")
+    public ResponseEntity<MarketDataDTO.TopFiveResponse> getTop5(@RequestParam(required = true) String sigungu) {
+        MarketDataDTO.TopFiveResponse response = marketDataService.getTop5Categories(sigungu);
+        return ResponseEntity.ok(response);
+    }
 }

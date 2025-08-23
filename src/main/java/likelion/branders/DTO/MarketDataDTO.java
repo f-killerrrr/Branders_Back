@@ -56,6 +56,14 @@ public class MarketDataDTO {
         private List<SigunguSimpleDetail> data;
     }
 
+    // Top 5 응답 DTO (새로 추가)
+    @Getter
+    @Builder
+    public static class TopFiveResponse {
+        private String sigungu;
+        private List<TopCategory> topCategories;
+    }
+
 
     // B. 구-동별 상세 업체 수 응답 DTO (상세 카운트)
     @Getter

@@ -4,8 +4,11 @@ import com.opencsv.CSVReader;
 import jakarta.annotation.PostConstruct;
 import likelion.branders.DTO.MarketDataDTO;
 import likelion.branders.DTO.SigunguSimpleDetail;
+import likelion.branders.DTO.TopCategory; // 추가
 import likelion.branders.Entity.MarketDataEntity;
 import likelion.branders.Repository.MarketDataRepository;
+import org.springframework.data.domain.PageRequest; // 추가
+import org.springframework.data.domain.Pageable; // 추가
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
@@ -187,6 +190,20 @@ public class MarketDataService {
                 .keyword(keyword)
                 .totalCountInCity(totalCountInCity)
                 .breakdown(sigunguBreakdown)
+                .build();
+    }
+
+    // Top 10 업종 조회 로직 (새로 추가) 이름만 top 5
+    @Transactional(readOnly = true)
+    public MarketDataDTO.TopFiveResponse getTop5Categories(String sigungu) {
+        log.info("Getting top 5 categories for sigungu: {}", sigungu);
+
+        Pageable pageable = PageRequest.of(0, 10); // 0페이지부터 5개만 가져오도록 설정
+        List<TopCategory> topCategories = marketDataRepository.findTop5CategoriesBySigungu(sigungu, pageable);
+
+        return MarketDataDTO.TopFiveResponse.builder()
+                .sigungu(sigungu)
+                .topCategories(topCategories)
                 .build();
     }
 }

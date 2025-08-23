@@ -2,6 +2,8 @@ package likelion.branders.Repository;
 
 import likelion.branders.DTO.MarketDataDTO;
 import likelion.branders.DTO.SigunguSimpleDetail;
+import likelion.branders.DTO.TopCategory; // 추가
+import org.springframework.data.domain.Pageable; // 추가
 import likelion.branders.Entity.MarketDataEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -40,4 +42,12 @@ public interface MarketDataRepository extends JpaRepository<MarketDataEntity, Lo
             "WHERE m.sido = '대구광역시' AND m.category LIKE %:keyword% " +
             "GROUP BY m.sigungu, m.dong")
     List<Object[]> findSigunguDongBreakdown(@Param("keyword") String keyword);
+
+    // 특정 구의 Top 5 업종을 조회하는 쿼리 (새로 추가)
+    @Query("SELECT new likelion.branders.DTO.TopCategory(m.category, COUNT(m)) " +
+            "FROM MarketDataEntity m " +
+            "WHERE m.sido = '대구광역시' AND m.sigungu = :sigungu " +
+            "GROUP BY m.category " +
+            "ORDER BY COUNT(m) DESC")
+    List<TopCategory> findTop5CategoriesBySigungu(@Param("sigungu") String sigungu, Pageable pageable);
 }
