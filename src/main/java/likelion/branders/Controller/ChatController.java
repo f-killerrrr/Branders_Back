@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/chat")
+@RequestMapping("/chat")
 @RequiredArgsConstructor
 
 public class ChatController {
@@ -23,9 +23,9 @@ public class ChatController {
     @PostMapping("/session")
     public ResponseEntity<ChatSessionDTO> createSession(
             @RequestParam Long userId,
-            @RequestParam String title,
+            @RequestParam String sessionTitle,
             @RequestParam String message) {
-        return ResponseEntity.ok(chatBotService.createSessionAndSendMessage(userId, title, message));
+        return ResponseEntity.ok(chatBotService.createSessionAndSendMessage(userId, sessionTitle, message));
     }
 
     //기존 세션에 메시지 전송 + GPT 답변 저장

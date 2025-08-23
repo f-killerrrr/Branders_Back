@@ -25,6 +25,7 @@ public class ChatMessageEntity {
     @Column(length = 2000)
     private String message;
 
+    //입력자 : USER, AI
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SenderType senderType;
