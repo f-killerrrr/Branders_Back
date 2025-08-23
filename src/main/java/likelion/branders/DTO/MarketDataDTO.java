@@ -47,14 +47,42 @@ public class MarketDataDTO {
         private double percentage;
     }
 
-    // 구별 업체 수 응답 DTO (새로 추가)
+    // A. 구별 업체 수 응답 DTO (단순 카운트)
     @Getter
     @Builder
     public static class SigunguCountResponse {
         private String keyword;
-        private long totalCountInCity; // 새로 추가
-        private List<SigunguCountDetail> data;
+        private long totalCountInCity;
+        private List<SigunguSimpleDetail> data;
     }
 
+
+    // B. 구-동별 상세 업체 수 응답 DTO (상세 카운트)
+    @Getter
+    @Builder
+    public static class SigunguBreakdownResponse {
+        private String keyword;
+        private long totalCountInCity;
+        private List<SigunguDetail> breakdown;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SigunguDetail {
+        private String sigungu;
+        private long totalCountInSigungu;
+        private List<DongDetail> dongs;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DongDetail {
+        private String dong;
+        private long count;
+    }
 
 }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SigunguCountDetail {
+public class SigunguSimpleDetail {
     private String sigungu;
     private long count;
 }

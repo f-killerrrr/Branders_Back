@@ -1,7 +1,5 @@
 package likelion.branders.Controller;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 import likelion.branders.DTO.MarketDataDTO;
 import likelion.branders.Service.MarketDataService;
 import lombok.RequiredArgsConstructor;
@@ -62,12 +60,21 @@ public class MarketDataController {
         return ResponseEntity.ok(response);
     }
 
-    // 구별 업체 수 조회 API (새로 추가)
-    @GetMapping("/breakdown")
-    public ResponseEntity<MarketDataDTO.SigunguCountResponse> getSigunguBreakdown(
+    // A. 구별 업체 수 조회 API (단순)
+    @GetMapping("/simplebreakdown")
+    public ResponseEntity<MarketDataDTO.SigunguCountResponse> getSigunguSimpleBreakdown(
             @RequestParam(required = true) String keyword) {
 
-        MarketDataDTO.SigunguCountResponse response = marketDataService.getSigunguBreakdown(keyword);
+        MarketDataDTO.SigunguCountResponse response = marketDataService.getSigunguSimpleBreakdown(keyword);
+        return ResponseEntity.ok(response);
+    }
+
+    // B. 구-동별 상세 업체 수 조회 API (상세)
+    @GetMapping("/detailedbreakdown")
+    public ResponseEntity<MarketDataDTO.SigunguBreakdownResponse> getSigunguDetailedBreakdown(
+            @RequestParam(required = true) String keyword) {
+
+        MarketDataDTO.SigunguBreakdownResponse response = marketDataService.getSigunguDetailedBreakdown(keyword);
         return ResponseEntity.ok(response);
     }
 }
