@@ -2,25 +2,20 @@ package likelion.branders.Service;
 
 import com.opencsv.CSVReader;
 import jakarta.annotation.PostConstruct;
-import likelion.branders.DAO.MarketDataDAO;
 import likelion.branders.DTO.MarketDataDTO;
-import likelion.branders.DTO.SigunguCountDetail;
+import likelion.branders.DTO.SigunguSimpleDetail;
 import likelion.branders.Entity.MarketDataEntity;
 import likelion.branders.Repository.MarketDataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook; // 추가
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -138,22 +133,60 @@ public class MarketDataService {
                 .build();
     }
 
-    // 구별 업체 수 조회 로직 (새로 추가)
+    // A. 구별 업체 수 조회 로직 (단순)
     @Transactional(readOnly = true)
-    public MarketDataDTO.SigunguCountResponse getSigunguBreakdown(String keyword) {
-        log.info("Getting sigungu breakdown for keyword: {}", keyword);
+    public MarketDataDTO.SigunguCountResponse getSigunguSimpleBreakdown(String keyword) {
+        log.info("Getting simple sigungu breakdown for keyword: {}", keyword);
 
-        // 1. 대구광역시 전체 업체 수 카운트 (새로 추가)
         long totalCountInCity = marketDataRepository.countBySidoAndCategory(keyword);
-        // 2. 구별 업체 수 조회
-        List<SigunguCountDetail> sigunguCounts = marketDataRepository.countBySigunguAndCategory(keyword);
+        // 여기서 MarketDataDTO.SigunguSimpleDetail -> SigunguSimpleDetail로 수정
+        List<SigunguSimpleDetail> sigunguCounts = marketDataRepository.countBySigunguAndCategory(keyword);
 
-        log.info("Found {} sigungu entries.", sigunguCounts.size());
-        // 3. 빌더에 전체 업체 수를 추가하여 반환
         return MarketDataDTO.SigunguCountResponse.builder()
                 .keyword(keyword)
-                .totalCountInCity(totalCountInCity) // 새로 추가
+                .totalCountInCity(totalCountInCity)
                 .data(sigunguCounts)
+                .build();
+    }
+
+    // B. 구-동별 상세 업체 수 조회 로직 (상세)
+    @Transactional(readOnly = true)
+    public MarketDataDTO.SigunguBreakdownResponse getSigunguDetailedBreakdown(String keyword) {
+        log.info("Getting detailed sigungu breakdown for keyword: {}", keyword);
+
+        long totalCountInCity = marketDataRepository.countBySidoAndCategory(keyword);
+        List<Object[]> rawData = marketDataRepository.findSigunguDongBreakdown(keyword);
+
+        Map<String, List<MarketDataDTO.DongDetail>> dongsBySigungu = rawData.stream()
+                .collect(Collectors.groupingBy(
+                        data -> (String) data[0],
+                        Collectors.mapping(
+                                data -> MarketDataDTO.DongDetail.builder()
+                                        .dong((String) data[1])
+                                        .count((Long) data[2])
+                                        .build(),
+                                Collectors.toList()
+                        )
+                ));
+
+        List<MarketDataDTO.SigunguDetail> sigunguBreakdown = dongsBySigungu.entrySet().stream()
+                .map(entry -> {
+                    String sigungu = entry.getKey();
+                    List<MarketDataDTO.DongDetail> dongs = entry.getValue();
+                    long totalCountInSigungu = dongs.stream().mapToLong(MarketDataDTO.DongDetail::getCount).sum();
+
+                    return MarketDataDTO.SigunguDetail.builder()
+                            .sigungu(sigungu)
+                            .totalCountInSigungu(totalCountInSigungu)
+                            .dongs(dongs)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return MarketDataDTO.SigunguBreakdownResponse.builder()
+                .keyword(keyword)
+                .totalCountInCity(totalCountInCity)
+                .breakdown(sigunguBreakdown)
                 .build();
     }
 }

@@ -1,10 +1,8 @@
 package likelion.branders.Repository;
 
 import likelion.branders.DTO.MarketDataDTO;
-import likelion.branders.DTO.SigunguCountDetail;
+import likelion.branders.DTO.SigunguSimpleDetail;
 import likelion.branders.Entity.MarketDataEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,10 +26,18 @@ public interface MarketDataRepository extends JpaRepository<MarketDataEntity, Lo
     @Query("SELECT COUNT(m) FROM MarketDataEntity m WHERE m.sido = '대구광역시' AND m.category LIKE %:keyword%")
     long countBySidoAndCategory(@Param("keyword") String keyword);
 
-    // 특정 키워드에 대해 구별로 업체 수를 카운트 (수정)
-    @Query("SELECT new likelion.branders.DTO.SigunguCountDetail(m.sigungu, COUNT(m)) " +
+
+    // 1. 구별 업체 수 카운트 (단순)
+    @Query("SELECT new likelion.branders.DTO.SigunguSimpleDetail(m.sigungu, COUNT(m)) " +
             "FROM MarketDataEntity m " +
             "WHERE m.sido = '대구광역시' AND m.category LIKE %:keyword% " +
             "GROUP BY m.sigungu")
-    List<SigunguCountDetail> countBySigunguAndCategory(@Param("keyword") String keyword);
+    List<SigunguSimpleDetail> countBySigunguAndCategory(@Param("keyword") String keyword);
+
+    // 2. 구-동별 업체 수 카운트 (상세)
+    @Query("SELECT m.sigungu, m.dong, COUNT(m) " +
+            "FROM MarketDataEntity m " +
+            "WHERE m.sido = '대구광역시' AND m.category LIKE %:keyword% " +
+            "GROUP BY m.sigungu, m.dong")
+    List<Object[]> findSigunguDongBreakdown(@Param("keyword") String keyword);
 }
