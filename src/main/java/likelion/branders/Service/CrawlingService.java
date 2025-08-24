@@ -3,6 +3,7 @@ package likelion.branders.Service;
 import likelion.branders.DTO.CrawledDataDTO;
 import likelion.branders.Entity.CrawledDataEntity;
 import likelion.branders.Repository.CrawledDataRepository;
+import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -16,16 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CrawlingService {
 
     private final CrawledDataRepository crawledDataRepository;
 
+    public List<CrawledDataEntity> search(String keyword) {
+        return crawledDataRepository.searchFullText(keyword);
+    }
+
     @Value("${chrome.driver.path}")
     private String chromeDriverPath;
-
-    public CrawlingService(CrawledDataRepository crawledDataRepository) {
-        this.crawledDataRepository = crawledDataRepository;
-    }
 
     public List<CrawledDataDTO> crawlAndSave() {
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
@@ -143,5 +145,4 @@ public class CrawlingService {
         } else {
             throw new IllegalArgumentException("해당 제목의 데이터가 존재하지 않습니다: " + title);
         }
-    }
-}
+    }}

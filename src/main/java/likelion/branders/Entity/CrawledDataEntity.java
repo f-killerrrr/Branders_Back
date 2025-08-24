@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "crawledData")
+@Table(name = "crawled_data")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,8 +16,13 @@ public class CrawledDataEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "period")
     private String period;
+
+    @Column(name = "policyId")
     private String policyId;
 
     public CrawledDataEntity(String title, String period, String policyId) {

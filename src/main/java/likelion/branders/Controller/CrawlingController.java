@@ -1,6 +1,7 @@
 package likelion.branders.Controller;
 
 import likelion.branders.DTO.CrawledDataDTO;
+import likelion.branders.Entity.CrawledDataEntity;
 import likelion.branders.Service.CrawlingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,12 @@ public class CrawlingController {
     @GetMapping("/all")
     public ResponseEntity<List<CrawledDataDTO>> getAllData() {
         return ResponseEntity.ok(crawlingService.getAllData());
+    }
+
+    // 검색 기능
+    @GetMapping("/search")
+    public ResponseEntity<List<CrawledDataEntity>> searchCrawledDTO(@RequestParam String keyword) {
+        return ResponseEntity.ok(crawlingService.search(keyword));
     }
 
     // 특정 제목으로 삭제
