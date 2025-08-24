@@ -27,13 +27,16 @@ public class ChatBotService {
     // 새 세션 생성 + 첫 메시지 전송
     @Transactional
     public ChatSessionDTO createSessionAndSendMessage(Long userId, String sessionTitle, String message) {
+        // 1. 세션 먼저 생성 후 저장
         ChatSessionEntity session = ChatSessionEntity.builder()
                 .sessionTitle(sessionTitle)
                 .user(new UserEntity(userId))
                 .messages(new ArrayList<>())
                 .build();
 
-        // 사용자 메시지 저장
+        session = sessionRepository.save(session);
+
+        // 2. 사용자 메시지 저장
         ChatMessageEntity userMsg = ChatMessageEntity.builder()
                 .message(message)
                 .senderType(SenderType.USER)
@@ -42,21 +45,19 @@ public class ChatBotService {
         chatMessageRepository.save(userMsg);
         session.getMessages().add(userMsg);
 
-        // AI 메시지 생성 및 저장
+        // 3. AI 메시지 생성 및 저장
         String reply = openAiService.ask(message);
         ChatMessageEntity botMsg = ChatMessageEntity.builder()
                 .message(reply)
                 .senderType(SenderType.AI)
                 .session(session)
                 .build();
-        chatMessageRepository.save(botMsg);  //
+        chatMessageRepository.save(botMsg);
         session.getMessages().add(botMsg);
-
-        // 세션 저장
-        sessionRepository.save(session);
 
         return session.toDTO();
     }
+
 
     // 기존 세션에 메시지 전송 + GPT 답변 저장
     @Transactional
