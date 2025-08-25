@@ -8,9 +8,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SeleniumConfig {
+    @Value("${chrome.driver.path}")
+    private String chromeDriverPath;
+    
     @Bean
     public WebDriver webDriver() {
-        System.setProperty("webdriver.chrome.driver", "C:\\chromedriver-win64\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
         ChromeOptions options = new ChromeOptions();
         options.addArguments(new String[]{"--headless"});
         options.addArguments(new String[]{"--no-sandbox"});
